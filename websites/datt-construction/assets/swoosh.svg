@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="none">
+<defs><linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f3d98f"/><stop offset=".4" stop-color="#c9973a"/><stop offset=".75" stop-color="#e8c77a"/><stop offset="1" stop-color="#a8741f"/></linearGradient></defs>
+<path d="M600 300V40C470 150 260 250 0 300Z" fill="url(#s)"/>
+<path d="M600 40V0C460 130 250 240 0 300C280 255 480 160 600 40Z" fill="url(#s)" opacity=".45"/>
+</svg>
