@@ -117,12 +117,10 @@ p { margin: 0 0 1em; }
   transition: background .3s, box-shadow .3s, padding .3s;
   padding: 14px 0;
   background: rgba(251, 246, 236, .94);
-  backdrop-filter: blur(10px);
   box-shadow: 0 2px 12px rgba(122, 74, 30, .06);
 }
 .header.scrolled {
   background: rgba(251, 246, 236, .94);
-  backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(122, 74, 30, .1);
   padding: 8px 0;
 }
@@ -180,11 +178,7 @@ p { margin: 0 0 1em; }
   animation: night var(--cycle) ease-in-out infinite;
 }
 .stars { position: absolute; inset: 0 0 30% 0; z-index: 0; pointer-events: none; opacity: 0; animation: night var(--cycle) ease-in-out infinite; }
-.stars i {
-  position: absolute; border-radius: 50%; background: #fffaf0;
-  box-shadow: 0 0 4px 1px rgba(255, 245, 220, .9), 0 0 10px 2px rgba(200, 215, 255, .35);
-  animation: twinkle 3s ease-in-out infinite;
-}
+.stars i { position: absolute; width: 3px; height: 3px; border-radius: 50%; animation: twinkle 3.5s ease-in-out infinite; }
 /* bright four-point sparkle stars */
 .stars i.sparkle { background: #fff; box-shadow: 0 0 8px 3px rgba(255, 245, 220, .9), 0 0 18px 6px rgba(232, 199, 122, .35); }
 .stars i.sparkle::before, .stars i.sparkle::after {
@@ -221,18 +215,15 @@ p { margin: 0 0 1em; }
   box-shadow: 0 0 40px 12px rgba(255, 240, 200, .35), inset -10px -6px 0 rgba(200, 175, 120, .35);
   opacity: 0; animation: moon var(--cycle) ease-in-out infinite;
 }
-.skyline {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 40%; z-index: 1; pointer-events: none;
-  -webkit-mask: linear-gradient(to top, #000 70%, transparent);
-          mask: linear-gradient(to top, #000 70%, transparent);
-}
-.skyline svg { width: 100%; height: 100%; }
-.skyline .lit { opacity: 0; filter: drop-shadow(0 0 3px rgba(255, 200, 100, .85)); animation: night var(--cycle) ease-in-out infinite; }
-/* each room switches its light on and off at a different rhythm */
-.skyline .room { animation-name: room-blink; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
-.skyline .room--steady { animation: none; }
-/* slow, smooth fade: on → dimming off → stays dark → slowly back on */
-@keyframes room-blink { 0%, 35% { opacity: 1; } 48%, 62% { opacity: .08; } 76%, 100% { opacity: 1; } }
+.skyline { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; z-index: 1; pointer-events: none; }
+.skyline svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* windows turn to dark night glass after sunset; the gold buildings stay as they are */
+.skyline .sk-dark { opacity: 0; will-change: opacity; animation: night var(--cycle) ease-in-out infinite; }
+.skyline .sk-lit { position: absolute; inset: 0; opacity: 0; will-change: opacity; animation: night var(--cycle) ease-in-out infinite; }
+/* each group of rooms fades its lights off and back on, slowly, at its own pace */
+.skyline .sk-room { will-change: opacity; animation: room-blink 10s ease-in-out infinite; }
+.skyline .sk-room--steady { animation: none; }
+@keyframes room-blink { 0%, 38% { opacity: 1; } 50%, 64% { opacity: 0; } 76%, 100% { opacity: 1; } }
 
 /* hero text brightens at night so it stays readable */
 .hero .eyebrow, .hero__amp, .hero__lead, .hero .btn--outline { animation: text-night var(--cycle) ease-in-out infinite; }
@@ -257,11 +248,13 @@ p { margin: 0 0 1em; }
 
 /* sparkles */
 .sparkles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.sparkles i {
-  position: absolute; width: 6px; height: 6px; border-radius: 50%;
-  background: radial-gradient(circle, #fff 0%, var(--gold-light) 40%, transparent 70%);
-  animation: twinkle 3s ease-in-out infinite;
-}
+.sparkle-layer, .star-layer { position: absolute; inset: 0; will-change: opacity; }
+.sparkle-layer--0 { animation: shimmer 4s ease-in-out infinite; }
+.sparkle-layer--1 { animation: shimmer 4s ease-in-out -2s infinite; }
+.star-layer--0 { animation: shimmer 3.5s ease-in-out infinite; }
+.star-layer--1 { animation: shimmer 5s ease-in-out -1.7s infinite; }
+.star-layer--2 { animation: shimmer 4.2s ease-in-out -3.1s infinite; }
+@keyframes shimmer { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
 @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.4); } 50% { opacity: 1; transform: scale(1.4); } }
 
 /* ---------- highlights ---------- */
