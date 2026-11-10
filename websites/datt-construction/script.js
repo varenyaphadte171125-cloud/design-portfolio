@@ -92,6 +92,33 @@
     }
   }
 
+  // Project filters
+  const filters = document.querySelectorAll('.filter');
+  const pcards = document.querySelectorAll('.pcard');
+  filters.forEach((btn) => btn.addEventListener('click', () => {
+    filters.forEach((b) => b.classList.toggle('is-active', b === btn));
+    const f = btn.dataset.filter;
+    pcards.forEach((c) => c.classList.toggle('is-hidden', f !== 'all' && c.dataset.cat !== f));
+  }));
+
+  // Count-up for the experience figures
+  const counters = document.querySelectorAll('[data-count]');
+  const countUp = (el) => {
+    const end = +el.dataset.count, start = performance.now(), dur = 1600;
+    const step = (t) => {
+      const p = Math.min((t - start) / dur, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  if ('IntersectionObserver' in window) {
+    const co = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { countUp(e.target); co.unobserve(e.target); }
+    }), { threshold: 0.5 });
+    counters.forEach((c) => co.observe(c));
+  } else counters.forEach((c) => (c.textContent = c.dataset.count));
+
   // Reveal on scroll
   const items = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
