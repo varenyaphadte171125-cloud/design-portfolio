@@ -42,7 +42,7 @@
     const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
     const ri = (a, b) => Math.floor(a + rnd() * (b - a + 1));
     const W = 1600, H = 420, ROOMS = 14;
-    const bld = [], shapes = [], rooms = Array.from({ length: ROOMS }, () => []);
+    const bld = [], rooms = Array.from({ length: ROOMS }, () => []);
     const rect = (x, y, w, h, f) => `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"${f ? ` fill="${f}"` : ''}/>`;
     const layer = (minW, maxW, minH, maxH, win, fill, glass, tallCentre) => {
       let x = -20;
@@ -53,7 +53,6 @@
         h = Math.min(h, H - 10);
         const y = H - h;
         bld.push(rect(x, y, w, h, fill));
-        shapes.push(rect(x, y, w, h));
         const r = rnd();
         if (r < .25) bld.push(rect(x + w * .3, y - 14, w * .4, 14, fill));
         else if (r < .4) bld.push(rect(x + w / 2 - 1.5, y - 34, 3, 34, fill));
@@ -82,12 +81,8 @@
       // glossy glass panes: bright upper half, sharp reflection line, deeper lower half
       '<linearGradient id="glassB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#fbf0d6"/><stop offset=".5" stop-color="#e3c98f"/><stop offset="1" stop-color="#f5e6c3"/></linearGradient>' +
       '<linearGradient id="glassF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf5"/><stop offset=".45" stop-color="#f6e3b4"/><stop offset=".5" stop-color="#c99a45"/><stop offset="1" stop-color="#ecd29a"/></linearGradient>' +
-      '<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-      `<clipPath id="facades">${shapes.join('')}</clipPath>` +
       '</defs>' +
       `<g class="bld">${bld.join('')}</g>` +
-      // sunlight reflection sweeping across the glass towers (daytime only)
-      '<g class="sheen" clip-path="url(#facades)"><g class="sheen__band"><path d="M0 420 L140 0 H220 L80 420Z" fill="url(#sheen)"/><path d="M110 420 L250 0 H275 L135 420Z" fill="url(#sheen)" opacity=".6"/></g></g>' +
       // lit rooms: the whole group fades in at dusk; each room blinks on/off at its own pace
       '<g class="lit">' + rooms.map((r, i) => {
         const dur = (12 + rnd() * 14).toFixed(1), delay = (-rnd() * 26).toFixed(1);

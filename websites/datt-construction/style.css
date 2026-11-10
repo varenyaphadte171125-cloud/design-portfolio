@@ -234,11 +234,6 @@ p { margin: 0 0 1em; }
 .skyline .room--steady { animation: none; }
 /* slow, smooth fade: on → dimming off → stays dark → slowly back on */
 @keyframes room-blink { 0%, 35% { opacity: 1; } 48%, 62% { opacity: .08; } 76%, 100% { opacity: 1; } }
-/* glossy sunlight reflection sliding across the glass by day */
-.skyline .sheen { mix-blend-mode: screen; animation: day-only var(--cycle) ease-in-out infinite; }
-.skyline .sheen__band { animation: sheen 7s ease-in-out infinite; }
-@keyframes sheen { 0% { transform: translateX(-320px); } 70%, 100% { transform: translateX(1700px); } }
-@keyframes day-only { 0%, 28% { opacity: 1; } 42%, 84% { opacity: 0; } 96%, 100% { opacity: 1; } }
 
 /* hero text brightens at night so it stays readable */
 .hero .eyebrow, .hero__amp, .hero__lead, .hero .btn--outline { animation: text-night var(--cycle) ease-in-out infinite; }
