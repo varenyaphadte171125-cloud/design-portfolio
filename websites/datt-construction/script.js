@@ -96,17 +96,28 @@
       }).join('') + '</g>';
   }
 
-  // Stars for the night sky
+  // Glowing night sky: stars of different sizes, sparkles and shooting stars
   const stars = document.querySelector('.stars');
   if (stars) {
-    for (let i = 0; i < 70; i++) {
+    const n = window.innerWidth < 600 ? 90 : 180;
+    for (let i = 0; i < n; i++) {
       const s = document.createElement('i');
+      const r = Math.random();
+      const size = r < .7 ? 1 + Math.random() : r < .95 ? 2 + Math.random() : 3.5;
+      s.style.width = s.style.height = size + 'px';
       s.style.left = Math.random() * 100 + '%';
-      s.style.top = Math.random() * 100 + '%';
-      s.style.animationDelay = (Math.random() * 3).toFixed(2) + 's';
-      if (Math.random() < .2) s.style.width = s.style.height = '3px';
+      s.style.top = Math.pow(Math.random(), 1.4) * 100 + '%'; // more stars higher up
+      s.style.animationDuration = (2 + Math.random() * 4).toFixed(2) + 's';
+      s.style.animationDelay = (-Math.random() * 5).toFixed(2) + 's';
+      if (Math.random() < .06) s.className = 'sparkle';
       stars.appendChild(s);
     }
+    [[78, 8, 0], [55, 4, 3.2], [92, 22, 6.1]].forEach(([l, t, d]) => {
+      const sh = document.createElement('span');
+      sh.className = 'shooting';
+      sh.style.left = l + '%'; sh.style.top = t + '%'; sh.style.animationDelay = d + 's';
+      stars.appendChild(sh);
+    });
   }
 
   // Project filters
