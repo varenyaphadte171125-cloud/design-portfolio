@@ -35,16 +35,16 @@
     }
   }
 
-  // Animated skyline: buildings + windows that light up at night
+  // Animated skyline: glossy glass by day, rooms switching lights on and off at night
   const svg = document.getElementById('skylineSvg');
   if (svg) {
     let seed = 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
     const ri = (a, b) => Math.floor(a + rnd() * (b - a + 1));
-    const W = 1600, H = 420;
-    const bld = [], lit = [[], [], [], [], []];
-    const rect = (x, y, w, h, f) => `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" fill="${f}"/>`;
-    const layer = (minW, maxW, minH, maxH, win, fill, winFill, tallCentre) => {
+    const W = 1600, H = 420, ROOMS = 14;
+    const bld = [], shapes = [], rooms = Array.from({ length: ROOMS }, () => []);
+    const rect = (x, y, w, h, f) => `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"${f ? ` fill="${f}"` : ''}/>`;
+    const layer = (minW, maxW, minH, maxH, win, fill, glass, tallCentre) => {
       let x = -20;
       while (x < W + 20) {
         const w = ri(minW, maxW);
@@ -53,6 +53,7 @@
         h = Math.min(h, H - 10);
         const y = H - h;
         bld.push(rect(x, y, w, h, fill));
+        shapes.push(rect(x, y, w, h));
         const r = rnd();
         if (r < .25) bld.push(rect(x + w * .3, y - 14, w * .4, 14, fill));
         else if (r < .4) bld.push(rect(x + w / 2 - 1.5, y - 34, 3, 34, fill));
@@ -63,20 +64,36 @@
           for (let c = 0; c < cols; c++) {
             if (rnd() < .82) {
               const wx = ox + c * (win + gap);
-              bld.push(rect(wx, yy, win, win * 1.3, winFill));
-              if (rnd() < .5) lit[ri(0, 4)].push(rect(wx, yy, win, win * 1.3, '#ffd889'));
+              bld.push(rect(wx, yy, win, win * 1.3, glass));
+              if (rnd() < .55) rooms[ri(0, ROOMS - 1)].push(rect(wx, yy, win, win * 1.3));
             }
           }
         }
         x += w + ri(-6, 10);
       }
     };
-    layer(50, 110, 140, 300, 6, 'url(#gb)', '#fbf3e0', true);
-    layer(40, 95, 60, 190, 5, 'url(#gf)', '#fff3d6', false);
+    layer(50, 110, 140, 300, 6, 'url(#gb)', 'url(#glassB)', true);
+    layer(40, 95, 60, 190, 5, 'url(#gf)', 'url(#glassF)', false);
+    const warm = ['#ffd889', '#ffe7a8', '#ffc65e', '#fff1c9'];
     svg.innerHTML =
-      '<defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1e0b6"/><stop offset="1" stop-color="#e2c27f"/></linearGradient>' +
-      '<linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9ac55"/><stop offset="1" stop-color="#9c6b1e"/></linearGradient></defs>' +
-      `<g class="bld">${bld.join('')}</g>` + lit.map((l, i) => `<g class="lit lit-${i}">${l.join('')}</g>`).join('');
+      '<defs>' +
+      '<linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1e0b6"/><stop offset="1" stop-color="#e2c27f"/></linearGradient>' +
+      '<linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9ac55"/><stop offset="1" stop-color="#9c6b1e"/></linearGradient>' +
+      // glossy glass panes: bright upper half, sharp reflection line, deeper lower half
+      '<linearGradient id="glassB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#fbf0d6"/><stop offset=".5" stop-color="#e3c98f"/><stop offset="1" stop-color="#f5e6c3"/></linearGradient>' +
+      '<linearGradient id="glassF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf5"/><stop offset=".45" stop-color="#f6e3b4"/><stop offset=".5" stop-color="#c99a45"/><stop offset="1" stop-color="#ecd29a"/></linearGradient>' +
+      '<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+      `<clipPath id="facades">${shapes.join('')}</clipPath>` +
+      '</defs>' +
+      `<g class="bld">${bld.join('')}</g>` +
+      // sunlight reflection sweeping across the glass towers (daytime only)
+      '<g class="sheen" clip-path="url(#facades)"><g class="sheen__band"><path d="M0 420 L140 0 H220 L80 420Z" fill="url(#sheen)"/><path d="M110 420 L250 0 H275 L135 420Z" fill="url(#sheen)" opacity=".6"/></g></g>' +
+      // lit rooms: the whole group fades in at dusk; each room blinks on/off at its own pace
+      '<g class="lit">' + rooms.map((r, i) => {
+        const dur = (4 + rnd() * 9).toFixed(1), delay = (-rnd() * 12).toFixed(1);
+        const steady = i % 4 === 0 ? ' room--steady' : '';
+        return `<g class="room${steady}" fill="${warm[i % warm.length]}" style="animation-duration:${dur}s;animation-delay:${delay}s">${r.join('')}</g>`;
+      }).join('') + '</g>';
   }
 
   // Stars for the night sky
