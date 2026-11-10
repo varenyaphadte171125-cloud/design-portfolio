@@ -52,7 +52,7 @@
       while (x < W + 20) {
         const w = ri(minW, maxW);
         let h = ri(minH, maxH);
-        if (tallCentre && x > 560 && x < 1040) h = Math.floor(h * 1.35);
+        if (tallCentre && x > 560 && x < 1040) h = Math.floor(h * 1.05);
         h = Math.min(h, H - 10);
         const y = H - h;
         bld.push(R(x, y, w, h, fill));
