@@ -81,8 +81,8 @@
         x += w + ri(-6, 10);
       }
     };
-    layer(50, 110, 140, 300, 6, 'url(#gb)', 'url(#glassB)', '#2c3654', true);
-    layer(40, 95, 60, 190, 5, 'url(#gf)', 'url(#glassF)', '#1b2237', false);
+    layer(50, 110, 140, 300, 6, 'url(#gb)', 'url(#glassB)', '#8a5f26', true);
+    layer(40, 95, 60, 190, 5, 'url(#gf)', 'url(#glassF)', '#4a3218', false);
     const svgOpen = (cls, extra = '') => `<svg class="${cls}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice"${extra}>`;
     const warm = ['#ffe9a3', '#fff3c8', '#ffd77a', '#fff8e1'];
     sky.innerHTML =
