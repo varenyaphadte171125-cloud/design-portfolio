@@ -40,7 +40,7 @@
   // Built as stacked layers so the lights can change without redrawing the city:
   //   1. gold buildings with glossy glass (static)
   //   2. dark night glass over every window (fades in at night)
-  //   3. one layer per group of rooms, each fading its lights on/off on its own
+  //   3. lit rooms (steady, no flicker)
   const sky = document.getElementById('skyline');
   if (sky) {
     let seed = 7;
@@ -94,11 +94,8 @@
         '<linearGradient id="glassF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf5"/><stop offset=".45" stop-color="#f6e3b4"/><stop offset=".5" stop-color="#c99a45"/><stop offset="1" stop-color="#ecd29a"/></linearGradient>' +
         '</defs>' + bld.join('') + '</svg>' +
       svgOpen('sk-dark') + dark.join('') + '</svg>' +
-      '<div class="sk-lit">' + rooms.map((r, i) => {
-        const dur = (7 + rnd() * 8).toFixed(1), delay = (-rnd() * 15).toFixed(1);
-        const style = i < 2 ? '' : ` style="animation-duration:${dur}s;animation-delay:${delay}s"`;
-        return svgOpen('sk-room' + (i < 2 ? ' sk-room--steady' : ''), style) + `<g fill="${warm[i % warm.length]}">${r.join('')}</g></svg>`;
-      }).join('') + '</div>';
+      // lit rooms: turn on at dusk, stay on steadily all night
+      svgOpen('sk-lit') + rooms.map((r, i) => `<g fill="${warm[i % warm.length]}">${r.join('')}</g>`).join('') + '</svg>';
   }
 
   // Glowing night sky: stars drawn into three layers that twinkle in turn,
