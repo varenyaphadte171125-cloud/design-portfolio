@@ -73,7 +73,7 @@
     };
     layer(50, 110, 140, 300, 6, 'url(#gb)', 'url(#glassB)', true);
     layer(40, 95, 60, 190, 5, 'url(#gf)', 'url(#glassF)', false);
-    const warm = ['#ffd889', '#ffe7a8', '#ffc65e', '#fff1c9'];
+    const warm = ['#fff4c2', '#ffe9a0', '#fffbe6', '#ffdf85']; // bright lit rooms that stand out on the gold facades
     svg.innerHTML =
       '<defs>' +
       '<linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1e0b6"/><stop offset="1" stop-color="#e2c27f"/></linearGradient>' +

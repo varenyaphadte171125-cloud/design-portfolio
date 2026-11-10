@@ -227,8 +227,7 @@ p { margin: 0 0 1em; }
           mask: linear-gradient(to top, #000 70%, transparent);
 }
 .skyline svg { width: 100%; height: 100%; }
-.skyline .bld { animation: bld-night var(--cycle) ease-in-out infinite; }
-.skyline .lit { opacity: 0; filter: drop-shadow(0 0 3px rgba(255, 190, 90, .9)); animation: night var(--cycle) ease-in-out infinite; }
+.skyline .lit { opacity: 0; filter: drop-shadow(0 0 3px rgba(255, 200, 100, .85)); animation: night var(--cycle) ease-in-out infinite; }
 /* each room switches its light on and off at a different rhythm */
 .skyline .room { animation-name: room-blink; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
 .skyline .room--steady { animation: none; }
@@ -248,7 +247,6 @@ p { margin: 0 0 1em; }
 @keyframes night { 0%, 36% { opacity: 0; } 50%, 78% { opacity: 1; } 92%, 100% { opacity: 0; } }
 @keyframes moon { 0%, 38% { opacity: 0; transform: translateY(40px); } 52%, 76% { opacity: 1; transform: none; } 90%, 100% { opacity: 0; transform: translateY(-20px); } }
 @keyframes sun { 0%, 24% { transform: translateY(0); opacity: 1; } 46% { transform: translateY(55vh); opacity: 1; } 47%, 80% { transform: translateY(55vh); opacity: 0; } 81% { opacity: 1; } 100% { transform: translateY(0); } }
-@keyframes bld-night { 0%, 34% { filter: none; } 50%, 78% { filter: brightness(.36) saturate(.75); } 92%, 100% { filter: none; } }
 @keyframes btn-night { 0%, 36% { background-color: rgba(255, 255, 255, .5); } 50%, 78% { background-color: rgba(255, 255, 255, .06); } 92%, 100% { background-color: rgba(255, 255, 255, .5); } }
 @keyframes text-night { 0%, 36% { color: var(--day); } 50%, 78% { color: var(--night); } 92%, 100% { color: var(--day); } }
 
