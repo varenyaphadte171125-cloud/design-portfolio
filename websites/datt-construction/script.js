@@ -90,7 +90,7 @@
       '<g class="sheen" clip-path="url(#facades)"><g class="sheen__band"><path d="M0 420 L140 0 H220 L80 420Z" fill="url(#sheen)"/><path d="M110 420 L250 0 H275 L135 420Z" fill="url(#sheen)" opacity=".6"/></g></g>' +
       // lit rooms: the whole group fades in at dusk; each room blinks on/off at its own pace
       '<g class="lit">' + rooms.map((r, i) => {
-        const dur = (4 + rnd() * 9).toFixed(1), delay = (-rnd() * 12).toFixed(1);
+        const dur = (12 + rnd() * 14).toFixed(1), delay = (-rnd() * 26).toFixed(1);
         const steady = i % 4 === 0 ? ' room--steady' : '';
         return `<g class="room${steady}" fill="${warm[i % warm.length]}" style="animation-duration:${dur}s;animation-delay:${delay}s">${r.join('')}</g>`;
       }).join('') + '</g>';

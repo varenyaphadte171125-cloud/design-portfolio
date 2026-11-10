@@ -230,9 +230,10 @@ p { margin: 0 0 1em; }
 .skyline .bld { animation: bld-night var(--cycle) ease-in-out infinite; }
 .skyline .lit { opacity: 0; filter: drop-shadow(0 0 3px rgba(255, 190, 90, .9)); animation: night var(--cycle) ease-in-out infinite; }
 /* each room switches its light on and off at a different rhythm */
-.skyline .room { animation-name: room-blink; animation-iteration-count: infinite; animation-timing-function: steps(1, end); }
+.skyline .room { animation-name: room-blink; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
 .skyline .room--steady { animation: none; }
-@keyframes room-blink { 0% { opacity: 1; } 55% { opacity: 0; } 75% { opacity: 1; } 88% { opacity: .0; } 92% { opacity: 1; } }
+/* slow, smooth fade: on → dimming off → stays dark → slowly back on */
+@keyframes room-blink { 0%, 35% { opacity: 1; } 48%, 62% { opacity: .08; } 76%, 100% { opacity: 1; } }
 /* glossy sunlight reflection sliding across the glass by day */
 .skyline .sheen { mix-blend-mode: screen; animation: day-only var(--cycle) ease-in-out infinite; }
 .skyline .sheen__band { animation: sheen 7s ease-in-out infinite; }
@@ -561,4 +562,24 @@ p { margin: 0 0 1em; }
   .hero { padding-bottom: 200px; }
   .moon { width: 42px; height: 42px; left: 7%; top: 13%; }
   .sun { width: 64px; height: 64px; right: 8%; top: 13%; }
+}
+
+/* ---------- fit the whole animated hero to the desktop screen ---------- */
+@media (min-width: 821px) {
+  .hero {
+    height: 100vh; height: 100svh; min-height: 600px;
+    padding: 80px 0 31vh;            /* header on top, skyline space at the bottom */
+  }
+  .skyline { height: 36vh; }
+  .hero__logo { width: clamp(48px, 9vh, 96px); height: clamp(48px, 9vh, 96px); margin-bottom: 1.2vh; }
+  .hero .eyebrow { margin-bottom: .4rem; }
+  .hero__title { font-size: clamp(2.2rem, min(6.4vw, 7.6vh), 4.8rem); }
+  .hero__tagline { font-size: clamp(1.7rem, min(4.6vw, 5.2vh), 3.2rem); margin: .1em 0 .35em; }
+  .hero__lead { font-size: clamp(.9rem, 1.9vh, 1.05rem); margin-bottom: 2.4vh; }
+  .hero .btn { padding: clamp(.65rem, 1.6vh, .95rem) 1.9rem; }
+  .sun { top: 15vh; } .moon { top: 16vh; }
+  .highlights { margin-top: 2.5rem; }   /* sits below the skyline instead of covering it */
+}
+@media (min-width: 821px) and (max-height: 700px) {
+  .hero__logo { display: none; }
 }
