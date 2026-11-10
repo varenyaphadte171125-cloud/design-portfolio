@@ -39,17 +39,16 @@
   // Animated skyline.
   // Built as stacked layers so the lights can change without redrawing the city:
   //   1. gold buildings with glossy glass (static)
-  //   2. dark night glass over every window (fades in at night)
-  //   3. lit rooms (steady, no flicker)
+  //   2. lit rooms (steady, no flicker)
   const sky = document.getElementById('skyline');
   if (sky) {
     let seed = 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
     const ri = (a, b) => Math.floor(a + rnd() * (b - a + 1));
     const W = 1600, H = 420, ROOMS = 8;
-    const bld = [], dark = [], rooms = Array.from({ length: ROOMS }, () => []);
+    const bld = [], rooms = Array.from({ length: ROOMS }, () => []);
     const R = (x, y, w, h, f) => `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"${f ? ` fill="${f}"` : ''}/>`;
-    const layer = (minW, maxW, minH, maxH, win, fill, glass, night, tallCentre) => {
+    const layer = (minW, maxW, minH, maxH, win, fill, glass, tallCentre) => {
       let x = -20;
       while (x < W + 20) {
         const w = ri(minW, maxW);
@@ -69,7 +68,6 @@
             if (rnd() < .82) {
               const wx = ox + c * (win + gap), wh = win * 1.3;
               bld.push(R(wx, yy, win, wh, glass));
-              dark.push(R(wx, yy, win, wh, night));
               if (rnd() < .5) {
                 const g = rooms[ri(0, ROOMS - 1)];
                 g.push(R(wx - 1.5, yy - 1.5, win + 3, wh + 3, 'rgba(255,190,80,.35)')); // soft glow
@@ -81,8 +79,8 @@
         x += w + ri(-6, 10);
       }
     };
-    layer(50, 110, 140, 300, 6, 'url(#gb)', 'url(#glassB)', '#8a5f26', true);
-    layer(40, 95, 60, 190, 5, 'url(#gf)', 'url(#glassF)', '#4a3218', false);
+    layer(50, 110, 140, 300, 6, 'url(#gb)', 'url(#glassB)', true);
+    layer(40, 95, 60, 190, 5, 'url(#gf)', 'url(#glassF)', false);
     const svgOpen = (cls, extra = '') => `<svg class="${cls}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice"${extra}>`;
     const warm = ['#ffe9a3', '#fff3c8', '#ffd77a', '#fff8e1'];
     sky.innerHTML =
@@ -93,7 +91,6 @@
         '<linearGradient id="glassB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#fbf0d6"/><stop offset=".5" stop-color="#e3c98f"/><stop offset="1" stop-color="#f5e6c3"/></linearGradient>' +
         '<linearGradient id="glassF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf5"/><stop offset=".45" stop-color="#f6e3b4"/><stop offset=".5" stop-color="#c99a45"/><stop offset="1" stop-color="#ecd29a"/></linearGradient>' +
         '</defs>' + bld.join('') + '</svg>' +
-      svgOpen('sk-dark') + dark.join('') + '</svg>' +
       // lit rooms: turn on at dusk, stay on steadily all night
       svgOpen('sk-lit') + rooms.map((r, i) => `<g fill="${warm[i % warm.length]}">${r.join('')}</g>`).join('') + '</svg>';
   }
