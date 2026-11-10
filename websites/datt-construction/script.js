@@ -35,6 +35,63 @@
     }
   }
 
+  // Animated skyline: buildings + windows that light up at night
+  const svg = document.getElementById('skylineSvg');
+  if (svg) {
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+    const ri = (a, b) => Math.floor(a + rnd() * (b - a + 1));
+    const W = 1600, H = 420;
+    const bld = [], lit = [[], [], [], [], []];
+    const rect = (x, y, w, h, f) => `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" fill="${f}"/>`;
+    const layer = (minW, maxW, minH, maxH, win, fill, winFill, tallCentre) => {
+      let x = -20;
+      while (x < W + 20) {
+        const w = ri(minW, maxW);
+        let h = ri(minH, maxH);
+        if (tallCentre && x > 560 && x < 1040) h = Math.floor(h * 1.35);
+        h = Math.min(h, H - 10);
+        const y = H - h;
+        bld.push(rect(x, y, w, h, fill));
+        const r = rnd();
+        if (r < .25) bld.push(rect(x + w * .3, y - 14, w * .4, 14, fill));
+        else if (r < .4) bld.push(rect(x + w / 2 - 1.5, y - 34, 3, 34, fill));
+        else if (r < .5) bld.push(`<path d="M${x} ${y}L${x + w / 2} ${y - 22}L${x + w} ${y}Z" fill="${fill}"/>`);
+        const gap = 6, cols = Math.max(1, Math.floor((w - gap) / (win + gap)));
+        const ox = x + (w - (cols * (win + gap) - gap)) / 2;
+        for (let yy = y + gap + 4; yy < H - win - 6; yy += win * 1.3 + gap) {
+          for (let c = 0; c < cols; c++) {
+            if (rnd() < .82) {
+              const wx = ox + c * (win + gap);
+              bld.push(rect(wx, yy, win, win * 1.3, winFill));
+              if (rnd() < .5) lit[ri(0, 4)].push(rect(wx, yy, win, win * 1.3, '#ffd889'));
+            }
+          }
+        }
+        x += w + ri(-6, 10);
+      }
+    };
+    layer(50, 110, 140, 300, 6, 'url(#gb)', '#fbf3e0', true);
+    layer(40, 95, 60, 190, 5, 'url(#gf)', '#fff3d6', false);
+    svg.innerHTML =
+      '<defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1e0b6"/><stop offset="1" stop-color="#e2c27f"/></linearGradient>' +
+      '<linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9ac55"/><stop offset="1" stop-color="#9c6b1e"/></linearGradient></defs>' +
+      `<g class="bld">${bld.join('')}</g>` + lit.map((l, i) => `<g class="lit lit-${i}">${l.join('')}</g>`).join('');
+  }
+
+  // Stars for the night sky
+  const stars = document.querySelector('.stars');
+  if (stars) {
+    for (let i = 0; i < 70; i++) {
+      const s = document.createElement('i');
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.animationDelay = (Math.random() * 3).toFixed(2) + 's';
+      if (Math.random() < .2) s.style.width = s.style.height = '3px';
+      stars.appendChild(s);
+    }
+  }
+
   // Reveal on scroll
   const items = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
