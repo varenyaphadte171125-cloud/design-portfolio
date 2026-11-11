@@ -37,34 +37,37 @@
   }
 
   // Background videos in the hero (only when the hero has the "hero--video" class).
-  // A short playlist of Indian construction clips that crossfade into each other.
+  // Story: site -> CAD design -> 3D render -> concrete work -> building rising.
   // Phones held upright get vertical cuts; laptops and tablets get 1080p.
   const hero = document.querySelector('.hero');
   const clips = document.querySelectorAll('.hero-video__clip');
   if (hero && clips.length === 2 && hero.classList.contains('hero--video')) {
     const SETS = {
-      landscape: ['assets/hero-l1.mp4', 'assets/hero-l2.mp4', 'assets/hero-l3.mp4'],
-      portrait: ['assets/hero-p1.mp4', 'assets/hero-p2.mp4', 'assets/hero-p3.mp4'],
+      landscape: ['assets/hero-l1.mp4', 'assets/hero-cad-l.mp4', 'assets/hero-design-l.mp4', 'assets/hero-l2.mp4', 'assets/hero-l3.mp4'],
+      portrait: ['assets/hero-p1.mp4', 'assets/hero-cad-p.mp4', 'assets/hero-design-p.mp4', 'assets/hero-p2.mp4', 'assets/hero-p3.mp4'],
     };
     const POSTERS = { landscape: 'assets/hero-poster.jpg', portrait: 'assets/hero-poster-portrait.jpg' };
     const FADE = 1.2; // seconds of crossfade
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = navigator.connection && navigator.connection.saveData;
-    let kind = '', list = [], idx = 0, front = 0, switching = false;
+    let kind = '', list = [], idx = 0, front = 0, switching = false, visible = true;
 
-    const play = (v) => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    const play = (v) => { if (!visible || document.hidden) return; const p = v.play(); if (p && p.catch) p.catch(() => {}); };
     const prepare = (v, i) => { v.src = list[i % list.length]; v.preload = 'auto'; v.load(); };
 
     const next = () => {
       if (switching) return;
-      switching = true;
       const cur = clips[front], nxt = clips[1 - front];
-      idx = (idx + 1) % list.length;
-      if (!nxt.src.endsWith(list[idx])) prepare(nxt, idx);
+      const nextIdx = (idx + 1) % list.length;
+      if (!nxt.src.endsWith(list[nextIdx])) prepare(nxt, nextIdx);
+      if (nxt.readyState < 3) {                    // next clip not buffered yet: replay current, try again later
+        cur.currentTime = 0; play(cur); return;
+      }
+      switching = true; idx = nextIdx;
       nxt.currentTime = 0; play(nxt);
       nxt.classList.add('is-on'); cur.classList.remove('is-on');
       front = 1 - front;
-      setTimeout(() => {                           // after the fade, load the one after next
+      setTimeout(() => {                           // after the fade, buffer the clip after next
         cur.pause(); prepare(cur, idx + 1); switching = false;
       }, FADE * 1000 + 100);
     };
@@ -89,6 +92,16 @@
     };
     start();
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(start, 250); });
+
+    // pause while the hero is off screen or the tab is hidden (smoother scrolling, saves battery)
+    const resume = () => { if (!reduce && !saveData && list.length) play(clips[front]); };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible) resume(); else clips.forEach((v) => v.pause());
+      }, { threshold: 0.05 }).observe(hero);
+    }
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clips.forEach((v) => v.pause()); else resume(); });
   }
 
   // Animated skyline: gold buildings with glossy glass. At night some rooms light up.
