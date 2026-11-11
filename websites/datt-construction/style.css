@@ -676,3 +676,86 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .hero--video .btn--outline { color: var(--gold-light); background: rgba(255, 255, 255, .08); border-color: var(--gold-light); }
 .hero--video .btn--outline:hover { background: var(--gold); color: #fff; }
 .hero--video .swoosh--tl { opacity: .5; }
+
+/* =========================================================
+   International-style refresh (inspired by leading US builders):
+   clean sans headings, full-bleed photo splits, stat tiles,
+   arrow links, transparent header over the video.
+   ========================================================= */
+:root { --font-sans-head: "Manrope", "Montserrat", system-ui, sans-serif; }
+
+/* clean modern headings; Cinzel stays for the brand name */
+.section-title, .card h3, .pcard h3, .step h3, .expertise__title, .commitment h3,
+.numbers__title, .cta-band h2, .footer h4, .group-title {
+  font-family: var(--font-sans-head); font-weight: 800; letter-spacing: -.015em; text-transform: none;
+}
+.section-title { font-size: clamp(1.9rem, 3.6vw, 2.9rem); line-height: 1.15; }
+.card h3, .pcard h3, .step h3 { font-weight: 700; letter-spacing: -.005em; }
+.footer h4 { font-size: .82rem; letter-spacing: .14em; text-transform: uppercase; }
+.ornament { display: none; }
+.section-head { margin-bottom: 2.6rem; }
+.section-sub { margin-top: .4rem; }
+/* eyebrow with a short gold rule, like "— News" */
+.eyebrow--line { display: inline-flex; align-items: center; gap: .7rem; }
+.eyebrow--line::before { content: ""; width: 34px; height: 2px; background: var(--gold); }
+.section-head .eyebrow { display: inline-flex; align-items: center; gap: .7rem; }
+.section-head .eyebrow::before, .section-head .eyebrow::after { content: ""; width: 26px; height: 2px; background: var(--gold); }
+
+/* text link with circled arrow */
+.link-arrow { display: inline-flex; align-items: center; gap: .8rem; margin-top: .6rem; font-weight: 700; font-size: .95rem; color: var(--bronze); }
+.link-arrow__icon { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--gold); display: grid; place-items: center; transition: background .25s, transform .25s; }
+.link-arrow__icon svg { width: 16px; height: 16px; fill: none; stroke: var(--gold-deep); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke .25s; }
+.link-arrow:hover .link-arrow__icon { background: var(--gold); transform: translateX(4px); }
+.link-arrow:hover .link-arrow__icon svg { stroke: #fff; }
+
+/* full-bleed split: photo half / text half */
+.split { display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; background: var(--ivory); }
+.split--tinted { background: var(--cream); }
+.split__media { position: relative; overflow: hidden; min-height: 320px; }
+.split__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; }
+.split:hover .split__media img { transform: scale(1.04); }
+.split__body { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(2.5rem, 6vw, 6rem) clamp(1.25rem, 6vw, 6rem); max-width: 720px; }
+.split--reverse .split__media { order: 2; }
+.split .checklist { margin-bottom: 1rem; }
+@media (max-width: 820px) {
+  .split { grid-template-columns: 1fr; min-height: 0; }
+  .split__media { aspect-ratio: 16 / 10; min-height: 0; }
+  .split--reverse .split__media { order: 0; }
+}
+
+/* "our numbers tell a story" tiles */
+.numbers { padding: clamp(64px, 8vw, 100px) 0; background: var(--ivory); }
+.numbers__title { font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin-bottom: 2rem; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.tile { background: linear-gradient(160deg, #3b2614, #2a1b0e); color: #f3e3c2; padding: 2.2rem 2rem; border-radius: 6px; min-height: 170px; display: flex; flex-direction: column; justify-content: space-between; }
+.tile--alt { background: linear-gradient(160deg, #8a5f26, #6b4a1e); }
+.tile__num { font-family: var(--font-sans-head); font-weight: 800; font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: 1; letter-spacing: -.02em; color: #fff3d6; }
+.tile--alt .tile__num { color: #fff; }
+.tile__label { margin-top: 1.2rem; font-size: .95rem; font-weight: 600; color: #e8d3a8; }
+@media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .tiles { gap: .7rem; } .tile { min-height: 120px; padding: 1.3rem 1.1rem; } .tile__num { font-size: 2.3rem; } .tile__label { font-size: .8rem; margin-top: .7rem; } }
+
+/* full-bleed photo CTA */
+.cta-band {
+  position: relative; padding: clamp(80px, 11vw, 140px) 0; color: #fff;
+  background: linear-gradient(90deg, rgba(25, 16, 7, .88) 0%, rgba(25, 16, 7, .65) 55%, rgba(25, 16, 7, .35) 100%), url("assets/site-concrete.jpg") center / cover no-repeat;
+}
+.cta-band__inner { max-width: 1160px; }
+.cta-band h2 { color: #fff; font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.15; max-width: 640px; margin-bottom: .8rem; }
+.cta-band p:not(.eyebrow) { color: #eadcc2; max-width: 520px; font-size: 1.05rem; margin-bottom: 1.8rem; }
+
+/* project cards: location first, then the name */
+.pcard__head > div { display: flex; flex-direction: column; }
+
+/* transparent header over the video hero, solid once you scroll */
+body:has(.hero--video) .header:not(.scrolled) { background: transparent; box-shadow: none; }
+body:has(.hero--video) .header:not(.scrolled) .brand__name { color: #fff6e3; }
+body:has(.hero--video) .header:not(.scrolled) .brand__sub { color: var(--gold-light); }
+body:has(.hero--video) .header:not(.scrolled) .nav-toggle span { background: #fff6e3; }
+@media (min-width: 821px) {
+  body:has(.hero--video) .header:not(.scrolled) .nav a:not(.btn) { color: #fff6e3; }
+  body:has(.hero--video) .header:not(.scrolled) .nav a.is-current:not(.btn) { color: var(--gold-light); }
+}
+.hero--video .hero-video__tint { background:
+    linear-gradient(180deg, rgba(22, 14, 6, .75) 0%, rgba(22, 14, 6, .35) 22%, rgba(22, 14, 6, .45) 60%, rgba(22, 14, 6, .75) 100%),
+    radial-gradient(ellipse at 50% 50%, rgba(201, 151, 58, .15), transparent 60%); }
