@@ -654,6 +654,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* ---------- hero background video (switch: .hero--video) ---------- */
 .hero-video { position: absolute; inset: 0; z-index: 0; overflow: hidden; display: none; background: #2a1b0e; }
 .hero-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.hero-video__clip { opacity: 0; transition: opacity 1.2s ease; }
+.hero-video__clip.is-on { opacity: 1; }
 /* warm dark tint so the gold text stays readable on any frame */
 .hero-video__tint {
   position: absolute; inset: 0;

@@ -36,28 +36,59 @@
     sparkles.innerHTML = '<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="sparkleDot"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#e8c77a"/><stop offset="1" stop-color="#e8c77a" stop-opacity="0"/></radialGradient></defs></svg>' + html;
   }
 
-  // Background video in the hero (only when the hero has the "hero--video" class).
-  // Phones held upright get a vertical cut of the video; laptops and tablets get 1080p.
+  // Background videos in the hero (only when the hero has the "hero--video" class).
+  // A short playlist of Indian construction clips that crossfade into each other.
+  // Phones held upright get vertical cuts; laptops and tablets get 1080p.
   const hero = document.querySelector('.hero');
-  const vid = document.getElementById('heroVideo');
-  if (hero && vid && hero.classList.contains('hero--video')) {
+  const clips = document.querySelectorAll('.hero-video__clip');
+  if (hero && clips.length === 2 && hero.classList.contains('hero--video')) {
+    const SETS = {
+      landscape: ['assets/hero-l1.mp4', 'assets/hero-l2.mp4', 'assets/hero-l3.mp4'],
+      portrait: ['assets/hero-p1.mp4', 'assets/hero-p2.mp4', 'assets/hero-p3.mp4'],
+    };
+    const POSTERS = { landscape: 'assets/hero-poster.jpg', portrait: 'assets/hero-poster-portrait.jpg' };
+    const FADE = 1.2; // seconds of crossfade
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = navigator.connection && navigator.connection.saveData;
-    let current = '';
-    const pick = () => {
-      const portrait = window.innerHeight > window.innerWidth && window.innerWidth < 700;   // phones only
-      const kind = portrait ? 'portrait' : 'landscape';
-      if (kind === current) return;
-      current = kind;
-      vid.poster = vid.dataset['poster' + (portrait ? 'Portrait' : 'Landscape')];
-      if (reduce || saveData) return;               // keep the still image only
-      vid.src = vid.dataset[kind];
-      vid.load();
-      const p = vid.play();
-      if (p && p.catch) p.catch(() => {});          // autoplay blocked: poster stays visible
+    let kind = '', list = [], idx = 0, front = 0, switching = false;
+
+    const play = (v) => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    const prepare = (v, i) => { v.src = list[i % list.length]; v.preload = 'auto'; v.load(); };
+
+    const next = () => {
+      if (switching) return;
+      switching = true;
+      const cur = clips[front], nxt = clips[1 - front];
+      idx = (idx + 1) % list.length;
+      if (!nxt.src.endsWith(list[idx])) prepare(nxt, idx);
+      nxt.currentTime = 0; play(nxt);
+      nxt.classList.add('is-on'); cur.classList.remove('is-on');
+      front = 1 - front;
+      setTimeout(() => {                           // after the fade, load the one after next
+        cur.pause(); prepare(cur, idx + 1); switching = false;
+      }, FADE * 1000 + 100);
     };
-    pick();
-    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(pick, 250); });
+
+    clips.forEach((v) => {
+      v.addEventListener('timeupdate', () => {
+        if (v === clips[front] && v.duration && v.currentTime > v.duration - FADE) next();
+      });
+      v.addEventListener('ended', () => { if (v === clips[front]) next(); });
+    });
+
+    const start = () => {
+      const portrait = window.innerHeight > window.innerWidth && window.innerWidth < 700;   // phones only
+      const k = portrait ? 'portrait' : 'landscape';
+      if (k === kind) return;
+      kind = k; list = SETS[k]; idx = 0; front = 0; switching = false;
+      clips[0].poster = POSTERS[k];
+      clips[0].classList.add('is-on'); clips[1].classList.remove('is-on');
+      if (reduce || saveData) return;              // keep the still image only
+      prepare(clips[0], 0); play(clips[0]);
+      prepare(clips[1], 1);
+    };
+    start();
+    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(start, 250); });
   }
 
   // Animated skyline: gold buildings with glossy glass. At night some rooms light up.

@@ -63,10 +63,12 @@
     <section class="hero hero--video">
       <!-- background video (aerial view of an RCC slab under construction, India; free Pexels licence) -->
       <div class="hero-video" aria-hidden="true">
-        <video id="heroVideo" muted loop playsinline preload="none" poster="assets/hero-poster.jpg"
-               data-landscape="assets/hero-1080.mp4" data-portrait="assets/hero-portrait.mp4"
-               data-poster-landscape="assets/hero-poster.jpg" data-poster-portrait="assets/hero-poster-portrait.jpg"></video>
+        <!-- Three Indian construction clips (free Pexels licence) that fade into each other.
+             Laptops/tablets play the landscape set, phones held upright play the vertical set. -->
+        <video class="hero-video__clip is-on" muted playsinline preload="none" poster="assets/hero-poster.jpg"></video>
+        <video class="hero-video__clip" muted playsinline preload="none"></video>
         <div class="hero-video__tint"></div>
+      </div>
       </div>
       <!-- animated day → night sky -->
       <div class="sky sky--sunset" aria-hidden="true"></div>
@@ -87,10 +89,6 @@
           <span class="hero__amp">&amp; Developers</span>
         </h1>
         <p class="script hero__tagline">Building Trust, Shaping Dreams</p>
-        <p class="hero__lead">
-          Land development, infrastructure and construction across Goa and Maharashtra,
-          engineered by a structural engineer and built to last.
-        </p>
         <div class="hero__actions">
           <a href="#contact" class="btn btn--gold">Start Your Project</a>
           <a href="#services" class="btn btn--outline">Our Services</a>
