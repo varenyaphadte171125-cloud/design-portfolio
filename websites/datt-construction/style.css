@@ -237,7 +237,7 @@ p { margin: 0 0 1em; }
 
 /* gold swoosh bands in the corners, like the card */
 .swoosh { position: absolute; z-index: 2; pointer-events: none; width: 42%; height: 170px; background: url("assets/swoosh.svg") center / 100% 100% no-repeat; }
-.swoosh--br { right: 0; bottom: 0; }
+.swoosh--br { right: 0; bottom: 0; width: 30%; height: 120px; opacity: .35; }   /* mirror of the top-left band */
 .swoosh--tl { left: 0; top: 0; width: 30%; height: 120px; transform: rotate(180deg); opacity: .35; }
 
 /* sparkles */
@@ -511,8 +511,7 @@ p { margin: 0 0 1em; }
   .about, .contact { grid-template-columns: 1fr; }
   .highlights__grid { grid-template-columns: repeat(2, 1fr); }
   .highlight:nth-child(3)::before { display: none; }
-  .swoosh--br { width: 70%; height: 110px; }
-  .swoosh--tl { display: none; }
+  .swoosh--br, .swoosh--tl { width: 55%; height: 80px; }
   .hero { padding-top: 130px; }
 }
 @media (max-width: 600px) {
@@ -580,7 +579,7 @@ p { margin: 0 0 1em; }
   .hero__lead { font-size: clamp(.85rem, 1.8svh, 1.1rem); }
   .sun { width: clamp(56px, 9svh, 100px); height: clamp(56px, 9svh, 100px); right: 7%; top: 11svh; }
   .moon { width: clamp(40px, 6svh, 70px); height: clamp(40px, 6svh, 70px); left: 7%; top: 12svh; }
-  .swoosh--br { width: 70%; height: 12svh; }
+  .swoosh--br, .swoosh--tl { width: 55%; height: 80px; }
 }
 
 /* phones */
@@ -677,7 +676,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .hero--video .hero__tagline { text-shadow: 0 2px 10px rgba(0, 0, 0, .45); }
 .hero--video .btn--outline { color: var(--gold-light); background: rgba(255, 255, 255, .08); border-color: var(--gold-light); }
 .hero--video .btn--outline:hover { background: var(--gold); color: #fff; }
-.hero--video .swoosh--tl { opacity: .5; }
+.hero--video .swoosh--tl, .hero--video .swoosh--br { opacity: .5; }
 
 /* =========================================================
    International-style refresh (inspired by leading US builders):
