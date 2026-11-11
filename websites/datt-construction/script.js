@@ -123,7 +123,7 @@
   const filters = document.querySelectorAll('.filter');
   const pcards = document.querySelectorAll('.pcard');
   filters.forEach((btn) => btn.addEventListener('click', () => {
-    filters.forEach((b) => b.classList.toggle('is-active', b === btn));
+    filters.forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-pressed', String(b === btn)); });
     const f = btn.dataset.filter;
     pcards.forEach((c) => c.classList.toggle('is-hidden', f !== 'all' && c.dataset.cat !== f));
   }));
@@ -160,27 +160,52 @@
     items.forEach((el) => el.classList.add('visible'));
   }
 
-  // Contact form -> opens the visitor's email app with the enquiry filled in
+  // Contact form -> email or WhatsApp with the enquiry filled in
   const form = document.getElementById('contactForm');
   const note = document.getElementById('formNote');
   const email = document.querySelector('[data-email]').textContent.trim();
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  const WHATSAPP = '917721914146';
+  const collect = () => {
     let ok = true;
     form.querySelectorAll('[required]').forEach((f) => {
       const bad = !f.value.trim();
       f.classList.toggle('invalid', bad);
+      f.setAttribute('aria-invalid', String(bad));
       if (bad) ok = false;
     });
-    if (!ok) { note.textContent = 'Please fill in your name and phone number.'; return; }
-
+    if (!ok) { note.textContent = 'Please fill in your name and phone number.'; return null; }
     const d = new FormData(form);
-    const subject = `Project enquiry: ${d.get('type')}`;
-    const body = `Name: ${d.get('name')}\nPhone: ${d.get('phone')}\nProject type: ${d.get('type')}\n\n${d.get('message')}`;
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return {
+      subject: `Project enquiry: ${d.get('type')}`,
+      body: `Name: ${d.get('name')}\nPhone: ${d.get('phone')}\nProject type: ${d.get('type')}\n\n${d.get('message')}`,
+    };
+  };
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const m = collect(); if (!m) return;
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(m.subject)}&body=${encodeURIComponent(m.body)}`;
     note.textContent = 'Thank you! Your email app should open to send the enquiry.';
-    form.reset();
   });
+  document.getElementById('sendWhatsApp').addEventListener('click', () => {
+    const m = collect(); if (!m) return;
+    window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(m.subject + '\n\n' + m.body)}`, '_blank', 'noopener');
+    note.textContent = 'Thank you! WhatsApp should open with your enquiry ready to send.';
+  });
+
+  // Highlight the menu link for the section on screen
+  const links = [...document.querySelectorAll('.nav a[href^="#"]:not(.btn)')];
+  if ('IntersectionObserver' in window) {
+    const so = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) links.forEach((l) => l.classList.toggle('is-current', l.getAttribute('href') === '#' + e.target.id));
+    }), { rootMargin: '-45% 0px -50% 0px' });
+    links.forEach((l) => { const s = document.querySelector(l.getAttribute('href')); if (s) so.observe(s); });
+  }
+
+  // Back-to-top button
+  const toTop = document.getElementById('toTop');
+  const onScrollTop = () => toTop.classList.toggle('show', window.scrollY > window.innerHeight);
+  window.addEventListener('scroll', onScrollTop, { passive: true }); onScrollTop();
+  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
   document.getElementById('year').textContent = new Date().getFullYear();
 })();
