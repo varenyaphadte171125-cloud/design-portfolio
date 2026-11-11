@@ -36,6 +36,30 @@
     sparkles.innerHTML = '<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="sparkleDot"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#e8c77a"/><stop offset="1" stop-color="#e8c77a" stop-opacity="0"/></radialGradient></defs></svg>' + html;
   }
 
+  // Background video in the hero (only when the hero has the "hero--video" class).
+  // Phones held upright get a vertical cut of the video; laptops and tablets get 1080p.
+  const hero = document.querySelector('.hero');
+  const vid = document.getElementById('heroVideo');
+  if (hero && vid && hero.classList.contains('hero--video')) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = navigator.connection && navigator.connection.saveData;
+    let current = '';
+    const pick = () => {
+      const portrait = window.innerHeight > window.innerWidth && window.innerWidth < 700;   // phones only
+      const kind = portrait ? 'portrait' : 'landscape';
+      if (kind === current) return;
+      current = kind;
+      vid.poster = vid.dataset['poster' + (portrait ? 'Portrait' : 'Landscape')];
+      if (reduce || saveData) return;               // keep the still image only
+      vid.src = vid.dataset[kind];
+      vid.load();
+      const p = vid.play();
+      if (p && p.catch) p.catch(() => {});          // autoplay blocked: poster stays visible
+    };
+    pick();
+    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(pick, 250); });
+  }
+
   // Animated skyline: gold buildings with glossy glass. At night some rooms light up.
   // Each row of buildings carries its own lights, so front buildings correctly
   // cover the lights of the buildings behind them.

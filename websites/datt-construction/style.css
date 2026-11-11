@@ -650,3 +650,29 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .header, .float-wa, .float-call, .to-top, .skyline, .sky, .stars, .sun, .moon, .swoosh, .map { display: none !important; }
   .hero { height: auto !important; padding: 2rem 0 !important; }
 }
+
+/* ---------- hero background video (switch: .hero--video) ---------- */
+.hero-video { position: absolute; inset: 0; z-index: 0; overflow: hidden; display: none; background: #2a1b0e; }
+.hero-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+/* warm dark tint so the gold text stays readable on any frame */
+.hero-video__tint {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(201, 151, 58, .18), transparent 60%),
+    linear-gradient(180deg, rgba(22, 14, 6, .62) 0%, rgba(22, 14, 6, .45) 45%, rgba(22, 14, 6, .72) 100%);
+}
+.hero--video .hero-video { display: block; }
+/* hide the animated skyline scene while the video is on (kept for easy revert) */
+.hero--video .sky, .hero--video .stars, .hero--video .sun, .hero--video .moon,
+.hero--video .skyline, .hero--video .sparkles { display: none; }
+/* text centred on the screen, in light colours over the video */
+.hero--video { padding-bottom: 6vh; padding-bottom: 6svh; background: #2a1b0e; }
+.hero--video .eyebrow, .hero--video .hero__amp, .hero--video .hero__lead, .hero--video .btn--outline { animation: none; }
+.hero--video .eyebrow { color: var(--gold-light); }
+.hero--video .hero__amp { color: #f6e7c8; }
+.hero--video .hero__lead { color: #efe2c8; text-shadow: 0 1px 8px rgba(0, 0, 0, .45); }
+.hero--video .hero__title .gold-text { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .5)); }
+.hero--video .hero__tagline { text-shadow: 0 2px 10px rgba(0, 0, 0, .45); }
+.hero--video .btn--outline { color: var(--gold-light); background: rgba(255, 255, 255, .08); border-color: var(--gold-light); }
+.hero--video .btn--outline:hover { background: var(--gold); color: #fff; }
+.hero--video .swoosh--tl { opacity: .5; }

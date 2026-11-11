@@ -59,7 +59,15 @@
 
   <main id="main">
     <!-- ============ HERO ============ -->
-    <section class="hero">
+    <!-- To go back to the animated skyline, remove "hero--video" from the line below. -->
+    <section class="hero hero--video">
+      <!-- background video (aerial view of an RCC slab under construction, India; free Pexels licence) -->
+      <div class="hero-video" aria-hidden="true">
+        <video id="heroVideo" muted loop playsinline preload="none" poster="assets/hero-poster.jpg"
+               data-landscape="assets/hero-1080.mp4" data-portrait="assets/hero-portrait.mp4"
+               data-poster-landscape="assets/hero-poster.jpg" data-poster-portrait="assets/hero-poster-portrait.jpg"></video>
+        <div class="hero-video__tint"></div>
+      </div>
       <!-- animated day → night sky -->
       <div class="sky sky--sunset" aria-hidden="true"></div>
       <div class="sky sky--night" aria-hidden="true"></div>

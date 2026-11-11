@@ -10,3 +10,9 @@ Open `index.html` in a browser to view it. It is a plain HTML/CSS/JS site with n
 ## Still to fill in
 - Project photos: replace the illustrated cards in the **Projects** section
 - Optional: a photo of Kedar in place of the "KP" monogram in **About**
+
+## Top background: video or animated skyline
+The top section currently plays a background video (aerial view of an RCC slab under
+construction in India, from Pexels, free for commercial use).
+To switch back to the animated day-to-night skyline, open `index.html` and remove
+`hero--video` from `<section class="hero hero--video">`.
